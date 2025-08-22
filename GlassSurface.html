@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+
+        /* COMPACT GLASS SURFACE NAVBAR */
+        .glass-surface {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1100px;
+            height: 56px;
+            z-index: 1000;
+
+            /* Core glass surface properties */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Applied parameters */
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(11px) saturate(1) brightness(0.5);
+            -webkit-backdrop-filter: blur(11px) saturate(1) brightness(0.5);
+            opacity: 0.93;
+            border: 0.07px solid rgba(255, 255, 255, 0.3);
+
+            /* Advanced shadows for glass effect */
+            box-shadow:
+                0 0 2px 1px rgba(0, 0, 0, 0.15) inset,
+                0 0 10px 4px rgba(0, 0, 0, 0.1) inset,
+                0px 4px 16px rgba(17, 17, 26, 0.05),
+                0px 8px 24px rgba(17, 17, 26, 0.05),
+                0px 16px 56px rgba(17, 17, 26, 0.05);
+        }
+
+
+
+        .glass-surface__filter {
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .glass-surface__content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            border-radius: inherit;
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-surface--svg {
+            backdrop-filter: url(#glass-filter) saturate(1);
+            -webkit-backdrop-filter: url(#glass-filter) saturate(1);
+        }
+
+        .glass-surface--fallback {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(11px) saturate(1) brightness(0.5);
+            -webkit-backdrop-filter: blur(11px) saturate(1) brightness(0.5);
+            border: 0.07px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .glass-surface--fallback {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(11px) saturate(1) brightness(0.5);
+                -webkit-backdrop-filter: blur(11px) saturate(1) brightness(0.5);
+                border: 0.07px solid rgba(255, 255, 255, 0.2);
+                box-shadow:
+                    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+                    inset 0 -1px 0 0 rgba(255, 255, 255, 0.1);
+            }
+        }
+    </style>
+      </head>
+
+<body>
+    <!-- REACTBITS GLASS SURFACE NAVBAR -->
+    <nav class="glass-surface glass-surface--svg" id="glassNavbar">
+        <!-- SVG Filter for advanced glass effects -->
+        <svg class="glass-surface__filter" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glass-filter" color-interpolation-filters="sRGB" x="0%" y="0%" width="100%" height="100%">
+                    <feImage id="displacement-map" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none"
+                        result="map" />
+
+                    <!-- Red channel displacement -->
+                    <feDisplacementMap in="SourceGraphic" in2="map" scale="-180" xChannelSelector="R"
+                        yChannelSelector="G" result="dispRed" />
+                    <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
+                        result="red" />
+
+                    <!-- Green channel displacement -->
+                    <feDisplacementMap in="SourceGraphic" in2="map" scale="-170" xChannelSelector="R"
+                        yChannelSelector="G" result="dispGreen" />
+                    <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
+                        result="green" />
+
+                    <!-- Blue channel displacement -->
+                    <feDisplacementMap in="SourceGraphic" in2="map" scale="-160" xChannelSelector="R"
+                        yChannelSelector="G" result="dispBlue" />
+                    <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
+                        result="blue" />
+
+                    <!-- Blend channels -->
+                    <feBlend in="red" in2="green" mode="screen" result="rg" />
+                    <feBlend in="rg" in2="blue" mode="screen" result="output" />
+
+                    <!-- Final blur -->
+                    <feGaussianBlur in="output" stdDeviation="0.5" />
+                </filter>
+
+                <!-- Gradients for displacement map -->
+                <linearGradient id="red-grad" x1="100%" y1="0%" x2="0%" y2="0%">
+                    <stop offset="0%" stop-color="#0000" />
+                    <stop offset="100%" stop-color="red" />
+                </linearGradient>
+                <linearGradient id="blue-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#0000" />
+                    <stop offset="100%" stop-color="blue" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <div class="glass-surface__content">
+            <a href="/index.html" class="navbar-brand">DiscoForge</a>
+            <div class="navbar-links">
+                <a href="/index.html" class="navbar-link">Accueil</a>
+                <a href="/tokens.html" class="navbar-link">Tokens</a>
+                <a href="/templates.html" class="navbar-link">Templates</a>
+                <a href="/login" class="navbar-cta">Connexion via Discord</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // ReactBits GlassSurface Implementation
+        class GlassSurface {
+            constructor(element) {
+                this.element = element;
+                this.filterId = 'glass-filter';
+                this.redGradId = 'red-grad';
+                this.blueGradId = 'blue-grad';
+
+                // Parameters from your specification
+                this.params = {
+                    borderRadius: 50,
+                    backgroundOpacity: 0.1,
+                    saturation: 1,
+                    borderWidth: 0.07,
+                    brightness: 50,
+                    opacity: 0.93,
+                    blur: 11,
+                    displace: 0.5,
+                    distortionScale: -180,
+                    redOffset: 0,
+                    greenOffset: 10,
+                    blueOffset: 20,
+                    xChannel: 'R',
+                    yChannel: 'G',
+                    mixBlendMode: 'difference'
+                };
+
+                this.init();
+            }
+
+            generateDisplacementMap() {
+                const rect = this.element.getBoundingClientRect();
+                const actualWidth = rect.width || 900;
+                const actualHeight = rect.height || 80;
+                const edgeSize = Math.min(actualWidth, actualHeight) * (this.params.borderWidth * 0.5);
+
+                const svgContent = `<svg viewBox="0 0 ${actualWidth} ${actualHeight}" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="${this.redGradId}" x1="100%" y1="0%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="#0000"/>
+              <stop offset="100%" stop-color="red"/>
+            </linearGradient>
+            <linearGradient id="${this.blueGradId}" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#0000"/>
+              <stop offset="100%" stop-color="blue"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" fill="black"></rect>
+          <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${this.params.borderRadius}" fill="url(#${this.redGradId})" />
+          <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${this.params.borderRadius}" fill="url(#${this.blueGradId})" style="mix-blend-mode: ${this.params.mixBlendMode}" />
+          <rect x="${edgeSize}" y="${edgeSize}" width="${actualWidth - edgeSize * 2}" height="${actualHeight - edgeSize * 2}" rx="${this.params.borderRadius}" fill="hsl(0 0% ${this.params.brightness}% / ${this.params.opacity})" style="filter:blur(${this.params.blur}px)" />
+        </svg>`;
+
+                return `data:image/svg+xml,${encodeURIComponent(svgContent)}`;
+            }
+
+            updateDisplacementMap() {
+                const feImage = this.element.querySelector('#displacement-map');
+                if (feImage) {
+                    feImage.setAttribute('href', this.generateDisplacementMap());
+                }
+            }
+
+            init() {
+                // Check SVG filter support
+                const supportsFilters = this.supportsSVGFilters();
+
+                if (!supportsFilters) {
+                    this.element.classList.remove('glass-surface--svg');
+                    this.element.classList.add('glass-surface--fallback');
+                    return;
+                }
+
+                // Update displacement map
+                setTimeout(() => this.updateDisplacementMap(), 0);
+
+                // Setup resize observer
+                const resizeObserver = new ResizeObserver(() => {
+                    setTimeout(() => this.updateDisplacementMap(), 0);
+                });
+                resizeObserver.observe(this.element);
+
+                // Update filter parameters
+                this.updateFilterParameters();
+            }
+
+            updateFilterParameters() {
+                const filter = this.element.querySelector(`#${this.filterId}`);
+                if (!filter) return;
+
+                // Update displacement scales with offsets
+                const redDisp = filter.querySelector('feDisplacementMap[result="dispRed"]');
+                const greenDisp = filter.querySelector('feDisplacementMap[result="dispGreen"]');
+                const blueDisp = filter.querySelector('feDisplacementMap[result="dispBlue"]');
+
+                if (redDisp) {
+                    redDisp.setAttribute('scale', (this.params.distortionScale + this.params.redOffset).toString());
+                }
+                if (greenDisp) {
+                    greenDisp.setAttribute('scale', (this.params.distortionScale + this.params.greenOffset).toString());
+                }
+                if (blueDisp) {
+                    blueDisp.setAttribute('scale', (this.params.distortionScale + this.params.blueOffset).toString());
+                }
+
+                // Update gaussian blur
+                const gaussianBlur = filter.querySelector('feGaussianBlur');
+                if (gaussianBlur) {
+                    gaussianBlur.setAttribute('stdDeviation', this.params.displace.toString());
+                }
+            }
+
+            supportsSVGFilters() {
+                const isWebkit = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+                const isFirefox = /Firefox/.test(navigator.userAgent);
+
+                if (isWebkit || isFirefox) return false;
+
+                const div = document.createElement('div');
+                div.style.backdropFilter = `url(#${this.filterId})`;
+                return div.style.backdropFilter !== '';
+            }
+        }
+
+        // Initialize GlassSurface
+        document.addEventListener('DOMContentLoaded', () => {
+            const glassNavbar = document.getElementById('glassNavbar');
+            if (glassNavbar) {
+                new GlassSurface(glassNavbar);
+            }
+
+            // Initialize active page indicator
+            initActivePageIndicator();
+
+            // Initialize micro-interactions
+            initMicroInteractions();
+
+            // Initialize navbar scroll effects
+            initNavbarScrollEffects();
+
+            // Initialize dropdown menu
+            initDropdownMenu();
+        });
+
+    </script>
+</body>
+
+</html>
